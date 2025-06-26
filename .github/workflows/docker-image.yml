@@ -1,20 +1,20 @@
-name: Docker Image CI
+name: Deploy
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [main]
 
 jobs:
-
-  build:
-
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ihyamars/test:v1
+      - uses: actions/checkout@v2
 
-    
+      - uses: alex-ac/github-action-ssh-docker-compose@master
+        name: Docker-Compose Remote Deployment
+        with:
+          ssh_host: ec2-3-83-144-79.compute-1.amazonaws.com
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh_user: ${{ secrets.SSH_USER }}
+          docker_compose_prefix: test
